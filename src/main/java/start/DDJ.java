@@ -1,18 +1,15 @@
 package start;
 
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author lsn
  * @date 2023/3/9 8:15 PM
  */
-public class DDJ extends Thread{
+public class DDJ {
     static Reducer reducer = new Reducer();
     static Migrator migrator = new Migrator();
     static Executor executor = new Executor();
@@ -23,7 +20,7 @@ public class DDJ extends Thread{
     private boolean isDecomposed;
     private String projectName;
     private String message;
-    private final int timeout = 300;
+    private final int timeout = 3600;
 
     public DDJ(File projectDir, Regression regression, String tool, String version, boolean isDecomposed, String projectName) {
         this.projectDir = projectDir;
@@ -36,17 +33,8 @@ public class DDJ extends Thread{
 
     }
 
-    public void run(){
-        try {
-            checkout();
-            runCCA();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void checkout() throws Exception{
-        SourceManager.cleanCache(message);
+        // SourceManager.cleanCache(message);
 
         Revision bfc = new Revision(regression.getBfc(),"bfc");
         bfc.setLocalCodeDir(SourceManager.checkout(regression.getId(), bfc, projectDir, message, projectName));
@@ -74,24 +62,6 @@ public class DDJ extends Thread{
         SourceManager.createShell(regression.getId(), message, projectName, buggy, regression.getTestCaseString());
     }
 
-//    static void ddj(String regressionID, File projectDir) throws Exception{
-//        //AST + ddmin
-//        runCCA(projectDir, regressionID, "ddmin", "bic",true);
-//        Thread.sleep(3000);
-//        //AST + prodd
-//        runCCA(projectDir, regressionID, "prodd", "bic",true);
-//        Thread.sleep(3000);
-//        //AST + ddmin - decomposed
-//        runCCA(projectDir, regressionID, "ddmin", "bic",false);
-//        Thread.sleep(3000);
-//        //AST + prodd - decomposed
-//        runCCA(projectDir, regressionID, "prodd", "bic",false);
-//        Thread.sleep(3000);
-//
-//        SourceManager.cleanCache();
-//        Thread.sleep(3000);
-//
-//    }
 
     public void runCCA() throws Exception {
         String projectName = projectDir.getName();
@@ -121,6 +91,7 @@ public class DDJ extends Thread{
         executor.exec(command);
 
         SourceManager.getDDJResult(message, projectName , regressionID + "_" + message);
+        SourceManager.backUP(message, projectName , regressionID);
     }
 
 

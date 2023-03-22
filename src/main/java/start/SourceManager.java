@@ -299,4 +299,15 @@ public class SourceManager {
     public static void cleanCache(String message) throws Exception{
         FileUtils.cleanDirectory(new File(cacheProjectsDirPath + File.separator + message));
     }
+
+    public static void backUP(String message, String projectName, String regressionID) throws IOException {
+        File projectDir = new File(cacheProjectsDirPath + File.separator + message + File.separator + projectName);
+        File[] child = projectDir.listFiles();
+        for (File file : child) {
+            if (file.getName().contains("__CCA__")) {
+                file.renameTo(new File(projectDir,regressionID + "_" + message));
+
+            }
+        }
+    }
 }

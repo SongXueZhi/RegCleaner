@@ -137,4 +137,30 @@ public class MysqlManager {
         }
         return regressionMap;
     }
+
+    public static List<Regression> selectRegressionstoList(String sql) {
+        List<Regression> regressions = new ArrayList<>();
+        try {
+            getStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            String projectName = "";
+            while (rs.next()) {
+                projectName = rs.getString("project_name");
+                Regression regression = new Regression();
+                regression.setId(rs.getString("id"));
+                regression.setProject_full_name(projectName);
+                regression.setBfc(rs.getString("bfc"));
+                regression.setBic(rs.getString("bic"));
+                regression.setWork(rs.getString("wc"));
+                regression.setTestCaseString(rs.getString("testcase1").split(";")[0]);
+                regressions.add(regression);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closed();
+        }
+        return regressions;
+    }
+
 }
