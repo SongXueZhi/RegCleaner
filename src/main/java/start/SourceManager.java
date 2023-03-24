@@ -4,6 +4,8 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: sxz
@@ -296,8 +298,14 @@ public class SourceManager {
         testFile.setWritable(true,false);
     }
 
-    public static void cleanCache(String message) throws Exception{
-        FileUtils.cleanDirectory(new File(cacheProjectsDirPath + File.separator + message));
+    public static void cleanCache(String message, String projectName) throws Exception{
+        File projectDir = new File(cacheProjectsDirPath + File.separator + message + File.separator + projectName);
+        File[] child = projectDir.listFiles();
+        for (File file : child) {
+            if (!file.getName().contains("__CCA__")) {
+                FileUtils.forceDeleteOnExit(file);
+            }
+        }
     }
 
     public static void backUP(String message, String projectName, String regressionID) throws IOException {
@@ -309,5 +317,16 @@ public class SourceManager {
 
             }
         }
+    }
+
+    //得到data目录下的所有文件名
+    public static List<String> getDataName(){
+        List<String> dataName = new ArrayList<>();
+        File file = new File(saveDataPath);
+        File[] files = file.listFiles();
+        for (File f : files) {
+            dataName.add(f.getName());
+        }
+        return dataName;
     }
 }

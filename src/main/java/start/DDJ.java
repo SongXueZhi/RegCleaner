@@ -20,7 +20,7 @@ public class DDJ {
     private boolean isDecomposed;
     private String projectName;
     private String message;
-    private final int timeout = 3600;
+    private final int timeout = 7200;
 
     public DDJ(File projectDir, Regression regression, String tool, String version, boolean isDecomposed, String projectName) {
         this.projectDir = projectDir;
@@ -33,8 +33,7 @@ public class DDJ {
 
     }
 
-    public void checkout() throws Exception{
-        // SourceManager.cleanCache(message);
+    public void checkout(){
 
         Revision bfc = new Revision(regression.getBfc(),"bfc");
         bfc.setLocalCodeDir(SourceManager.checkout(regression.getId(), bfc, projectDir, message, projectName));
@@ -91,6 +90,7 @@ public class DDJ {
         executor.exec(command);
 
         SourceManager.getDDJResult(message, projectName , regressionID + "_" + message);
+        SourceManager.cleanCache(message, projectName);
         SourceManager.backUP(message, projectName , regressionID);
     }
 
