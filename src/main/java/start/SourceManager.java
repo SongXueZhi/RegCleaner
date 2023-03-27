@@ -13,9 +13,9 @@ import java.util.List;
  * @Description:
  */
 public class SourceManager {
-    private final static String metaProjectsDirPath = Main.workSpacePath + File.separator + "meta_projects";
-    private final static String cacheProjectsDirPath = Main.workSpacePath + File.separator+ "cache_projects";
-    private final static String saveDataPath = Main.workSpacePath+ File.separator+ "data";
+    public final static String metaProjectsDirPath = Main.workSpacePath + File.separator + "meta_projects";
+    public final static String cacheProjectsDirPath = Main.workSpacePath + File.separator+ "cache_projects";
+    public final static String saveDataPath = Main.workSpacePath+ File.separator+ "data";
 
     public static File checkout(String regressionID,Revision revision, File projectFile, String message, String projectFullName) {
         //copy source code from meta project dir
@@ -285,6 +285,53 @@ public class SourceManager {
                         "    /bin/echo -n 'FAIL'\n" +
                         "fi";
                 FileUtils.write(testFile, s1 + s2 + s3 + s4 + s5, "UTF-8");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        buildFile.setExecutable(true,false);
+        buildFile.setReadable(true,false);
+        buildFile.setWritable(true,false);
+        testFile.setExecutable(true,false);
+        testFile.setReadable(true,false);
+        testFile.setWritable(true,false);
+    }
+
+    public static void createShell(String regressionID, String message, String projectFullName, Revision revision, String testcase, String errorType) {
+        String projectDirName = projectFullName.replace("/", "_");
+        File buildFile =
+                new File(cacheProjectsDirPath + File.separator + message + File.separator + projectDirName + File.separator + regressionID+"_"+revision.getName(),
+                        "build.sh");
+        File testFile =
+                new File(cacheProjectsDirPath + File.separator + message + File.separator + projectDirName + File.separator +  regressionID+"_"+revision.getName(),
+                        "test.sh");
+        if (!buildFile.exists()) {
+            try {
+                buildFile.createNewFile();
+                buildFile.canRead();
+                buildFile.canExecute();
+                buildFile.canWrite();
+                String s1 = "#!/bin/bash";
+                String s2 = "defects4j compile &> /dev/null";
+                FileUtils.write(buildFile, s1 + "\n" + s2, "UTF-8");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (!testFile.exists()) {
+            try {
+                testFile.createNewFile();
+                String s1 = "#!/bin/bash" + "\n";
+                String s2 = "test_result=$(timeout 10m defects4j test -t " + testcase + " 2>&1)" + "\n";
+                String s3 = "if echo $test_result | grep -q '" + errorType + "'; then" + "\n";
+                String s4 = "   echo  -n 'FAIL'" + "\n";
+                String s5 = "elif echo $test_result | grep -q 'Failing tests: 0'; then" + "\n";
+                String s6 = "   echo  -n 'PASS'" + "\n";
+                String s7 = "else" + "\n";
+                String s8 = "   echo  -n 'UNRESOLVED'" + "\n";
+                String s9 = "fi" + "\n";
+                FileUtils.write(testFile, s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8 + s9, "UTF-8");
             } catch (IOException e) {
                 e.printStackTrace();
             }

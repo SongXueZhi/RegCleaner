@@ -16,6 +16,7 @@ public class Regression {
     private String buggy;
     private String bic;
     private String work;
+    private String errorType;
 
     private Revision bfcRev;
     private Revision buggyRev;
@@ -71,6 +72,14 @@ public class Regression {
 
     public void setWork(String work) {
         this.work = work;
+    }
+
+    public String getErrorType() {
+        return errorType;
+    }
+
+    public void setErrorType(String errorType) {
+        this.errorType = errorType;
     }
 
     public String getTestCaseString() {
