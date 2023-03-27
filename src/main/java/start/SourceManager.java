@@ -303,7 +303,7 @@ public class SourceManager {
         File[] child = projectDir.listFiles();
         for (File file : child) {
             if (!file.getName().contains("__CCA__")) {
-                FileUtils.forceDeleteOnExit(file);
+                FileUtils.deleteDirectory(file);
             }
         }
     }
