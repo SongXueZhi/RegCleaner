@@ -63,11 +63,12 @@ public class DDJThreadForDefects4j extends Thread {
         String[] pids = pidResult.split("\n");
         List<Regression> regressions = new ArrayList<>();
         for(String pid : pids){
-            if(pid == null || pid.equals("") || pid.equals(" ") || pid.equals("Chart")){
+            //todo 后续单独处理
+            if(pid == null || pid.equals("") || pid.equals(" ") || pid.equals("Chart") || pid.equals("Cli") || pid.equals("Closure")
+                    || pid.equals("Codec") || pid.equals("JxPath") || pid.equals("Mockito")){
                 continue;
             }
             String bidResult = executor.exec("defects4j bids -p " + pid);
-            System.out.println();
             String[] bids = bidResult.split("\n");
             for (String bid : bids){
                 if(bid == null || bid.equals("") || bid.equals(" ")){

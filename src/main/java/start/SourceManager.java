@@ -323,15 +323,16 @@ public class SourceManager {
             try {
                 testFile.createNewFile();
                 String s1 = "#!/bin/bash" + "\n";
-                String s2 = "test_result=$(timeout 10m defects4j test -t " + testcase + " 2>&1)" + "\n";
-                String s3 = "if echo $test_result | grep -q '" + errorType + "'; then" + "\n";
-                String s4 = "   echo  -n 'FAIL'" + "\n";
-                String s5 = "elif echo $test_result | grep -q 'Failing tests: 0'; then" + "\n";
-                String s6 = "   echo  -n 'PASS'" + "\n";
-                String s7 = "else" + "\n";
-                String s8 = "   echo  -n 'UNRESOLVED'" + "\n";
-                String s9 = "fi" + "\n";
-                FileUtils.write(testFile, s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8 + s9, "UTF-8");
+                String s2 = "test_result=$(timeout 10m defects4j test -t " + testcase + " 2>&1)" + "\nfilename='failing_tests'\n";
+                String s3 = "search_string= '" + errorType + "'\n";
+                String s4 = "if grep -q \"$search_string\" \"$filename\"; then" + "\n";
+                String s5 = "   echo  -n 'FAIL'" + "\n";
+                String s6 = "elif echo $test_result | grep -q 'Failing tests: 0'; then" + "\n";
+                String s7 = "   echo  -n 'PASS'" + "\n";
+                String s8 = "else" + "\n";
+                String s9 = "   echo  -n 'UNRESOLVED'" + "\n";
+                String s10 = "fi" + "\n";
+                FileUtils.write(testFile, s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8 + s9 + s10, "UTF-8");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -350,7 +351,9 @@ public class SourceManager {
         File[] child = projectDir.listFiles();
         for (File file : child) {
             if (!file.getName().contains("__CCA__")) {
-                FileUtils.deleteDirectory(file);
+                if(file.isDirectory()){
+                    FileUtils.deleteDirectory(file);
+                }
             }
         }
     }
