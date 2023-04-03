@@ -1,18 +1,16 @@
 package start;
 
-
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+
 
 /**
  * @author lsn
- * @date 2023/3/27 9:25 AM
+ * @date 2023/4/3 2:53 PM
  */
-public class DDJForDefects4j {
+public class DDJForDiff {
 
     static Executor executor = new Executor();
     private File projectDir;
@@ -24,7 +22,7 @@ public class DDJForDefects4j {
     private String message;
     private final int timeout = 7200;
 
-    public DDJForDefects4j(File cacheDir, Regression regression, String tool, String version, boolean isDecomposed, String projectName) {
+    public DDJForDiff(File cacheDir, Regression regression, String tool, String version, boolean isDecomposed, String projectName) {
         this.regression = regression;
         this.tool = tool;
         this.version = version;
@@ -34,7 +32,7 @@ public class DDJForDefects4j {
         this.projectDir = new File(cacheDir, message + File.separator + projectName);
     }
 
-    public void checkout() throws IOException {
+    public void checkout() throws IOException, InterruptedException {
         if (projectDir.exists() && !projectDir.isDirectory()) {
             projectDir.delete();
         }
@@ -49,7 +47,6 @@ public class DDJForDefects4j {
         String buggyCheckoutResult = executor.exec("defects4j checkout -p " + regression.getProject_full_name() + " -v "
                 + regression.getId().replace(regression.getProject_full_name(), "") + "b -w " + regression.getId() + "_buggy");
         buggy.setLocalCodeDir(new File(projectDir, regression.getId() + "_buggy"));
-        GitUtils.checkout(buggy.getCommitID(),  new File(projectDir,regression.getId()+"_"+buggy.getName()));
         regression.setBuggyRev(buggy);
 
         Revision fix = new Revision(regression.getBfc(),"fix");
@@ -61,9 +58,9 @@ public class DDJForDefects4j {
                 + regression.getId().replace(regression.getProject_full_name(), "") + "f -w " + regression.getId() + "_fix");
         fix.setLocalCodeDir(new File(projectDir, regression.getId() + "_fix"));
         regression.setBfcRev(fix);
-
-        SourceManager.createShell(regression.getId(), message, projectName, fix, regression.getTestCaseString(), regression.getErrorType());
-        SourceManager.createShell(regression.getId(), message, projectName, buggy, regression.getTestCaseString(), regression.getErrorType());
+        Thread.sleep(2000);
+//        SourceManager.createShell(regression.getId(), message, projectName, fix, regression.getTestCaseString(), regression.getErrorType());
+//        SourceManager.createShell(regression.getId(), message, projectName, buggy, regression.getTestCaseString(), regression.getErrorType());
     }
 
 
@@ -79,17 +76,17 @@ public class DDJForDefects4j {
         }else if(version.equals("bfc")){
             godName = regressionID + "_bfc";
             badName = regressionID + "_buggy";
-        }else if(version.equals("defects4j")) {
+        }else if(version.equals("defects4j") || version.equals("diff")) {
             godName = regressionID + "_fix";
             badName = regressionID + "_buggy";
         }
         System.out.println("start " +version + " ddj " + tool);
         if(isDecomposed){
-            command = "timeout " + timeout + " ./cca_bfc.py ddjava cache_projects" + File.separator + message + File.separator
+            command = "timeout " + timeout + " ./cca_diff.py ddjava --include src/main/java --include src/java cache_projects" + File.separator + message + File.separator
                     + projectName.replace("/", "_") + " "
-                    + godName +" "+ badName + " -a " + tool + " --include src/java --include src/main/java -d -v";
+                    + godName +" "+ badName + " -a " + tool + " -d -v";
         }else {
-            command = "timeout " + timeout + " ./cca_bfc.py ddjava --include src/java --include src/main/java cache_projects" + File.separator + message + File.separator
+            command = "timeout " + timeout + " ./cca_diff.py ddjava --include src/main/java --include src/java cache_projects" + File.separator + message + File.separator
                     + projectName.replace("/", "_") + " "
                     + godName + " " + badName + " -a " + tool + " --noresolve --noref --nochg";
         }
@@ -97,7 +94,7 @@ public class DDJForDefects4j {
         executor.setDirectory(new File(Main.workSpacePath));
         executor.exec(command);
 
-        SourceManager.getDDJResult(message, projectName , regressionID + "_" + message);
+        SourceManager.getDiffResult(message, projectName , regressionID + "_" + message);
         SourceManager.cleanCache(message, projectName);
         SourceManager.backUP(message, projectName , regressionID);
     }

@@ -16,6 +16,7 @@ public class SourceManager {
     public final static String metaProjectsDirPath = Main.workSpacePath + File.separator + "meta_projects";
     public final static String cacheProjectsDirPath = Main.workSpacePath + File.separator+ "cache_projects";
     public final static String saveDataPath = Main.workSpacePath+ File.separator+ "data";
+    public final static String defects4jDiffPath = Main.workSpacePath+ File.separator+ "diff";
 
     public static File checkout(String regressionID,Revision revision, File projectFile, String message, String projectFullName) {
         //copy source code from meta project dir
@@ -127,6 +128,25 @@ public class SourceManager {
                 if (logFile.exists()) {
                     System.out.println("ddj result file :" + logFile);
                     SourceManager.saveData(logFile, newName);
+                }
+            }
+        }
+    }
+
+    public static void saveDiff(File file, String newName) throws Exception{
+        FileUtils.copyFile(file,new File(defects4jDiffPath + File.separator + newName));
+    }
+
+    public static void getDiffResult(String message, String projectName, String newName) throws Exception{
+        File projectDir = new File(cacheProjectsDirPath + File.separator + message + File.separator + projectName);
+        String result = "";
+        File[] child = projectDir.listFiles();
+        for (File file : child) {
+            if (file.getName().contains("__CCA__")) {
+                File logFile = new File(file, "data.log");
+                if (logFile.exists()) {
+                    System.out.println("ddj result file :" + logFile);
+                    SourceManager.saveDiff(logFile, newName);
                 }
             }
         }
@@ -324,10 +344,10 @@ public class SourceManager {
                 testFile.createNewFile();
                 String s1 = "#!/bin/bash" + "\n";
                 String s2 = "test_result=$(timeout 10m defects4j test -t " + testcase + " 2>&1)" + "\nfilename='failing_tests'\n";
-                String s3 = "search_string= '" + errorType + "'\n";
+                String s3 = "search_string='" + errorType + "'\n";
                 String s4 = "if grep -q \"$search_string\" \"$filename\"; then" + "\n";
                 String s5 = "   echo  -n 'FAIL'" + "\n";
-                String s6 = "elif echo $test_result | grep -q 'Failing tests: 0'; then" + "\n";
+                String s6 = "elif echo \"$test_result\" | grep -q 'Failing tests: 0'; then" + "\n";
                 String s7 = "   echo  -n 'PASS'" + "\n";
                 String s8 = "else" + "\n";
                 String s9 = "   echo  -n 'UNRESOLVED'" + "\n";
@@ -373,6 +393,16 @@ public class SourceManager {
     public static List<String> getDataName(){
         List<String> dataName = new ArrayList<>();
         File file = new File(saveDataPath);
+        File[] files = file.listFiles();
+        for (File f : files) {
+            dataName.add(f.getName());
+        }
+        return dataName;
+    }
+
+    public static List<String> getDefects4jDiffName(){
+        List<String> dataName = new ArrayList<>();
+        File file = new File(defects4jDiffPath);
         File[] files = file.listFiles();
         for (File f : files) {
             dataName.add(f.getName());

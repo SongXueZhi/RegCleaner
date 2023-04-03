@@ -1,24 +1,22 @@
 package start;
 
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * @author lsn
- * @date 2023/3/27 9:46 AM
+ * @date 2023/4/3 2:53 PM
  */
-public class DDJThreadForDefects4j extends Thread {
+public class DDJThreadForDiff extends Thread{
     static Executor executor = new Executor();
     private String tool;
     private String version;
     private boolean isDecomposed;
 
-    public DDJThreadForDefects4j(String tool, String version, boolean isDecomposed) {
+    public DDJThreadForDiff(String tool, String version, boolean isDecomposed) {
         this.tool = tool;
         this.version = version;
         this.isDecomposed = isDecomposed;
@@ -36,7 +34,7 @@ public class DDJThreadForDefects4j extends Thread {
             System.out.println(projectName + " " + tool +  " " + version + " " + isDecomposed);
             System.out.println(regression.getId());
             try {
-                DDJForDefects4j ddj = new DDJForDefects4j(new File(SourceManager.cacheProjectsDirPath), regression, tool, version, isDecomposed, projectName);
+                DDJForDiff ddj = new DDJForDiff(new File(SourceManager.cacheProjectsDirPath), regression, tool, version, isDecomposed, projectName);
                 ddj.checkout();
                 ddj.runCCA();
             } catch (Exception e) {
@@ -45,10 +43,10 @@ public class DDJThreadForDefects4j extends Thread {
         }
     }
 
-    //读取data目录下的文件名，得到已经运行的regressions
+    //读取defects4j_diff目录下的文件名，得到已经运行的regressions
     public List<String> getRegressions(){
         List<String> uuid = new ArrayList<>();
-        List<String> dataName = SourceManager.getDataName();
+        List<String> dataName = SourceManager.getDefects4jDiffName();
         for(String name : dataName){
             String[] split = name.split("_");
             if(split.length == (isDecomposed ? 4: 5) && split[1].equals(version) && split[3].equals(tool)){
@@ -64,7 +62,7 @@ public class DDJThreadForDefects4j extends Thread {
         List<Regression> regressions = new ArrayList<>();
         for(String pid : pids){
             //todo 后续单独处理
-            if(pid == null || pid.equals("") || pid.equals(" ") || pid.equals("Chart") || pid.equals("Closure") || pid.equals("Mockito") || pid.equals("Math") ){
+            if(pid == null || pid.equals("") || pid.equals(" ") || pid.equals("Chart") || pid.equals("Closure") || pid.equals("Mockito")){
                 continue;
             }
             String bidResult = executor.exec("defects4j bids -p " + pid);
