@@ -6,17 +6,30 @@ package start;
  */
 public class TestDDJ {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
-//        DDJThread ddjThread1 = new DDJThread("ddmin", "defects4j", true);
-//        DDJThread ddjThread2 = new DDJThread("prodd", "defects4j", true);
-        DDJThreadForDefects4j ddjThread1 = new DDJThreadForDefects4j("ddmin", "defects4j", true);
-        ddjThread1.setName("defects4j_ddmin_true");
-        DDJThreadForDefects4j ddjThread2 = new DDJThreadForDefects4j("prodd", "defects4j", true);
-        ddjThread2.setName("defects4j_prodd_true");
+        DDJThreadForNew ddjThread1 = new DDJThreadForNew("reldd1", "bic", true, 1,450);
+        DDJThreadForNew ddjThread2 = new DDJThreadForNew("reldd2", "bic", true,451,900);
+        DDJThreadForNew ddjThread3 = new DDJThreadForNew("reldd3", "bic", true,901,1350);
+        DDJThreadForNew ddjThread4 = new DDJThreadForNew("reldd4", "bic", true,1351,1800);
+
+//        DDJThread ddjThread2 = new DDJThread("prodd", "bic", true);
+
+//        DDJThreadForDefects4j ddjThread1 = new DDJThreadForDefects4j("ddmin", "defects4j", true);
+//        ddjThread1.setName("defects4j_ddmin_true");
+//        DDJThreadForDefects4j ddjThread2 = new DDJThreadForDefects4j("prodd", "defects4j", true);
+//        ddjThread2.setName("defects4j_prodd_true");
         ddjThread1.start();
+        Thread.sleep(10000); // Wait for 1 second
         ddjThread2.start();
-
+        Thread.sleep(10000); // Wait for 1 second
+        ddjThread3.start();
+        Thread.sleep(10000); // Wait for 1 second
+        ddjThread4.start();
+//
+//        DDJThreadForDiff ddjThread1 = new DDJThreadForDiff("ddmin", "diff", true);
+//        ddjThread1.setName("diff_ddmin_true");
+//        ddjThread1.start();
     }
 
 
