@@ -75,7 +75,6 @@ public class DDJ {
             godName = regressionID + "_bfc";
             badName = regressionID + "_buggy";
         }
-        System.out.println("start " +version + " ddj " + tool);
         if(isDecomposed){
             command = "timeout " + timeout + " ./cca.py ddjava --include src/main/java cache_projects" + File.separator + message + File.separator
                     + projectName.replace("/", "_") + " "

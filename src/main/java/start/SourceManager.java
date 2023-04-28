@@ -206,13 +206,13 @@ public class SourceManager {
         testFile.setWritable(true,false);
     }
 
-    public static void createShell(String regressionID, String projectFullName, Revision revision, String testcase) {
+    public static void createShellForBugBuilder(String regressionID, String message, String projectFullName, Revision revision, String testcase) {
         String projectDirName = projectFullName.replace("/", "_");
         File buildFile =
-                new File(cacheProjectsDirPath + File.separator + projectDirName + File.separator + regressionID+"_"+revision.getName(),
+                new File(cacheProjectsDirPath + File.separator + message + File.separator + projectDirName + File.separator + regressionID+"_"+revision.getName(),
                         "build.sh");
         File testFile =
-                new File(cacheProjectsDirPath + File.separator + projectDirName + File.separator +  regressionID+"_"+revision.getName(),
+                new File(cacheProjectsDirPath + File.separator + message + File.separator + projectDirName + File.separator +  regressionID+"_"+revision.getName(),
                         "test.sh");
         if (!buildFile.exists()) {
             try {
@@ -221,7 +221,50 @@ public class SourceManager {
                 buildFile.canExecute();
                 buildFile.canWrite();
                 String s1 = "#!/bin/bash";
-                String s2 = "mvn clean compile test-compile &> /dev/null";
+                String s2 = "mvn clean compile test-compile";
+                FileUtils.write(buildFile, s1 + "\n" + s2, "UTF-8");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (!testFile.exists()) {
+            try {
+                testFile.createNewFile();
+                buildFile.canRead();
+                buildFile.canExecute();
+                buildFile.canWrite();
+                String s1 = "#!/bin/bash" + "\n";
+                String s2 = "timeout 300 mvn test -Dtest=" + testcase  + "\n";
+                FileUtils.write(testFile, s1 + s2 , "UTF-8");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        buildFile.setExecutable(true,false);
+        buildFile.setReadable(true,false);
+        buildFile.setWritable(true,false);
+        testFile.setExecutable(true,false);
+        testFile.setReadable(true,false);
+        testFile.setWritable(true,false);
+    }
+
+    public static void createShellForNew(String regressionID,String message, String projectFullName, Revision revision, String testcase) {
+        String projectDirName = projectFullName.replace("/", "_");
+        File buildFile =
+                new File(cacheProjectsDirPath + File.separator + message + File.separator + projectDirName + File.separator + regressionID+"_"+revision.getName(),
+                        "build.sh");
+        File testFile =
+                new File(cacheProjectsDirPath + File.separator + message + File.separator + projectDirName + File.separator +  regressionID+"_"+revision.getName(),
+                        "test.sh");
+        if (!buildFile.exists()) {
+            try {
+                buildFile.createNewFile();
+                buildFile.canRead();
+                buildFile.canExecute();
+                buildFile.canWrite();
+                String s1 = "#!/bin/bash";
+                String s2 = "mvn clean compile test-compile -Dstyle.color=never -q";
                 FileUtils.write(buildFile, s1 + "\n" + s2, "UTF-8");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -244,7 +287,7 @@ public class SourceManager {
                         "if [ ${PASS} = '1' -a ${CE} = '0' ]; then\n" +
                         "    /bin/echo -n 'PASS'\n" +
                         "elif [ ${CE} = '1' ]; then\n" +
-                        "    /bin/echo -n 'UNRESOLVED'\n" +
+                        "    /bin/echo -n 'CE'\n" +
                         "else\n" +
                         "    /bin/echo -n 'FAIL'\n" +
                         "fi";

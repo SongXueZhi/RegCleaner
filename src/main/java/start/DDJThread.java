@@ -21,11 +21,13 @@ public class DDJThread extends Thread {
     }
 
     public void run() {
-        //String sql = "select * from regressions_all where id = 20 or id = 33";
+        //String sql = "select * from regressions_all where id = 20";
         String sql = "select * from regressions_all where is_clean=1 and is_dirty=0";
         List<Regression> regressions  = MysqlManager.selectRegressionstoList(sql);
+        System.out.println("regression size: " + regressions.size());
         List<String> uuid = getRegressions();
         regressions.removeIf(regression -> uuid.contains(regression.getId()));
+        System.out.println("run regression size: " + regressions.size());
         for (int i = 0; i < regressions.size(); i++) {
             Regression regression = regressions.get(i);
             String projectName = regression.getProject_full_name();
