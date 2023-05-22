@@ -13,6 +13,8 @@ public class DDJThread extends Thread {
     private String tool;
     private String version;
     private boolean isDecomposed;
+    private int startId = 0;
+    private int endId = 1800;
 
     public DDJThread( String tool, String version, boolean isDecomposed) {
         this.tool = tool;
@@ -20,9 +22,16 @@ public class DDJThread extends Thread {
         this.isDecomposed = isDecomposed;
     }
 
+    public DDJThread( String tool, String version, boolean isDecomposed, int startId, int endId) {
+        this.tool = tool;
+        this.version = version;
+        this.isDecomposed = isDecomposed;
+        this.startId = startId;
+        this.endId = endId;
+    }
     public void run() {
         //String sql = "select * from regressions_all where id = 20";
-        String sql = "select * from regressions_all where is_clean=1 and is_dirty=0";
+        String sql = "select * from regressions_all where is_clean=1 and is_dirty=0 and id >= " + startId + " and id <= " + endId;
         List<Regression> regressions  = MysqlManager.selectRegressionstoList(sql);
         System.out.println("regression size: " + regressions.size());
         List<String> uuid = getRegressions();
