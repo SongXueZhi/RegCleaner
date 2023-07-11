@@ -1,6 +1,8 @@
 package start.compareCC;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -16,6 +18,13 @@ public class LineRangeList {
 
     public void addLineRange(LineRange range) {
         lineRanges.add(range);
+        Collections.sort(lineRanges, new Comparator<LineRange>() {
+            @Override
+            public int compare(LineRange lineRange1, LineRange lineRange2) {
+                // 按照 startLine 的大小进行比较
+                return Integer.compare(lineRange1.getStartLine(), lineRange2.getStartLine());
+            }
+        });
         mergeLineRanges();
     }
 

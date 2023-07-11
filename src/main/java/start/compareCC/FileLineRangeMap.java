@@ -11,8 +11,19 @@ import java.util.Objects;
 public class FileLineRangeMap {
     private Map<String, LineRangeList> fileLineRangeMap;
 
+    private int hunkNum ;
+
+    public int getHunkNum() {
+        return hunkNum;
+    }
+
+    public void setHunkNum(int hunkNum) {
+        this.hunkNum = hunkNum;
+    }
+
     public FileLineRangeMap() {
         fileLineRangeMap = new HashMap<>();
+        hunkNum = 0;
     }
 
     public void addLineRange(String fileName, int start, int end) {

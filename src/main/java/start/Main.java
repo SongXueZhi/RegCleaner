@@ -17,8 +17,8 @@ public class Main {
     private static CommandLine commandLine;
     private static String HELP_STRING = null;
     private final static String CONFIG_LONG_OPT="configPath";
-    public static String workSpacePath =  System.getProperty("user.home") + File.separator + "ddj_space";
-    //public static String workSpacePath =  System.getProperty("user.home") + File.separator + "dd" +  File.separator + "ddj_space" ;
+    //public static String workSpacePath =  System.getProperty("user.home") + File.separator + "ddj_space";
+    public static String workSpacePath =  System.getProperty("user.home") + File.separator + "dd" +  File.separator + "ddj_space" ;
     static Reducer reducer = new Reducer();
     static Migrator migrator = new Migrator();
     static RegCleaner regCleaner =new RegCleaner();

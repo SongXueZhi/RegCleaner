@@ -1,5 +1,7 @@
-package start;
+package start.DDJ;
 
+
+import start.*;
 
 import java.io.File;
 import java.util.Arrays;
@@ -7,7 +9,7 @@ import java.util.List;
 
 /**
  * @author lsn
- * @date 2023/3/9 8:15 PM
+ * @date 2023/3/22 10:46 AM
  */
 public class DDJForNew {
     static Reducer reducer = new Reducer();
@@ -21,15 +23,17 @@ public class DDJForNew {
     private String projectName;
     private String message;
     private final int timeout = 7200;
+    private String model;
 
-    public DDJForNew(File projectDir, Regression regression, String tool, String version, boolean isDecomposed, String projectName) {
+    public DDJForNew(File projectDir, Regression regression, String tool, String version, boolean isDecomposed, String projectName, String model) {
         this.projectDir = projectDir;
         this.regression = regression;
         this.tool = tool;
+        this.model = model;
         this.version = version;
         this.isDecomposed = isDecomposed;
         this.projectName = projectName;
-        this.message = version + "_ddj_" + tool + (isDecomposed ? "" : "_nodecomposed");
+        this.message = version + "_ddj_" + tool + (isDecomposed ? "_" : "_nodecomposed_" + model);
 
     }
 
@@ -78,11 +82,11 @@ public class DDJForNew {
         if(isDecomposed){
             command = "timeout " + timeout + " ./cca_sxz.py ddjava --include src/main/java cache_projects" + File.separator + message + File.separator
                     + projectName.replace("/", "_") + " "
-                    + godName +" "+ badName + " -a ddmin";
+                    + godName +" "+ badName + " -a " + (tool.substring(0,5)) + " --model " + model;
         }else {
             command = "timeout " + timeout + " ./cca_sxz.py ddjava --include src/main/java cache_projects" + File.separator + message + File.separator
                     + projectName.replace("/", "_") + " "
-                    + godName + " " + badName + " -a ddmin" + " --noresolve --noref --nochg";
+                    + godName + " " + badName + " -a " + (tool.substring(0,5)) + " --noresolve --noref --nochg" + " --model " + model;
         }
         System.out.println(command);
         executor.setDirectory(new File(Main.workSpacePath));

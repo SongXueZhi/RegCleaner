@@ -1,5 +1,9 @@
-package start;
+package start.DDJ;
 
+
+import start.MysqlManager;
+import start.Regression;
+import start.SourceManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,13 +19,15 @@ public class DDJThreadForNew extends Thread {
     private boolean isDecomposed;
     private int startId;
     private int endId;
+    private String model;
 
-    public DDJThreadForNew(String tool, String version, boolean isDecomposed, int startId, int endId) {
+    public DDJThreadForNew(String tool, String version, boolean isDecomposed, int startId, int endId, String model) {
         this.tool = tool;
         this.version = version;
         this.isDecomposed = isDecomposed;
         this.startId = startId;
         this.endId = endId;
+        this.model = model;
     }
 
     public void run() {
@@ -34,11 +40,11 @@ public class DDJThreadForNew extends Thread {
         for (int i = 0; i < regressions.size(); i++) {
             Regression regression = regressions.get(i);
             String projectName = regression.getProject_full_name();
-            System.out.println(projectName + " " + tool +  " " + version + " " + isDecomposed);
+            System.out.println(projectName + " " + tool +  " " + version + " " + isDecomposed + " " + model);
             File projectDir = SourceManager.getProjectDir(projectName);
             System.out.println(regression.getId());
             try {
-                DDJForNew ddj = new DDJForNew(projectDir, regression, tool, version, isDecomposed, projectName);
+                DDJForNew ddj = new DDJForNew(projectDir, regression, tool, version, isDecomposed, projectName, model);
                 ddj.checkout();
                 ddj.runCCA();
             } catch (Exception e) {
@@ -53,7 +59,7 @@ public class DDJThreadForNew extends Thread {
         List<String> dataName = SourceManager.getDataName();
         for(String name : dataName){
             String[] split = name.split("_");
-            if(split.length == (isDecomposed ? 4: 5) && split[1].equals(version) && split[3].equals(tool)){
+            if(split.length == (isDecomposed ? 5: 6) && split[1].equals(version) && split[3].equals(tool) && split[5].equals(model)){
                 uuid.add(split[0]);
             }
         }

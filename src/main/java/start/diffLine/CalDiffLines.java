@@ -20,7 +20,7 @@ public class CalDiffLines {
         String[] header = {"ID", "diffFile", "diffHunk", "changeLineNum"};
         writer.writeNext(header);
 
-        String sql = "select * from regressions_all where id = 464";
+        String sql = "select * from regressions_all where id = 666";
         //String sql = "select * from regressions_all where is_clean=1 and is_dirty=0";
         List<Regression> regressions  = MysqlManager.selectRegressionstoList(sql);
         System.out.println("regression size: " + regressions.size());

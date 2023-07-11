@@ -1,4 +1,6 @@
-package start;
+package start.DDJ;
+
+import start.DDJ.DDJThread;
 
 /**
  * @author lsn
@@ -8,15 +10,15 @@ public class TestDDJ {
 
     public static void main(String[] args) throws InterruptedException {
 
-//        DDJThreadForNew ddjThread1 = new DDJThreadForNew("reldd1", "bic", true, 1,450);
-//        DDJThreadForNew ddjThread2 = new DDJThreadForNew("reldd2", "bic", true,451,900);
-//        DDJThreadForNew ddjThread3 = new DDJThreadForNew("reldd3", "bic", true,901,1350);
-//        DDJThreadForNew ddjThread4 = new DDJThreadForNew("reldd4", "bic", true,1351,1800);
+        DDJThreadForNew ddjThread1 = new DDJThreadForNew("reldd1", "bic", true, 1,500, "log+matrix");
+        DDJThreadForNew ddjThread2 = new DDJThreadForNew("reldd2", "bic", true,501,950, "log+matrix");
+        DDJThreadForNew ddjThread3 = new DDJThreadForNew("reldd3", "bic", true,951,1400, "log+matrix");
+        DDJThreadForNew ddjThread4 = new DDJThreadForNew("reldd4", "bic", true,1401,1800, "log+matrix");
 
-        DDJThread ddjThread1 = new DDJThread("prodd1", "bic", false, 1,300);
-        DDJThread ddjThread2 = new DDJThread("prodd2", "bic", false,301,650);
-        DDJThread ddjThread3 = new DDJThread("prodd3", "bic", false,651,1300);
-        DDJThread ddjThread4 = new DDJThread("prodd4", "bic", false,1301,1800);
+//        DDJThread ddjThread1 = new DDJThread("prodd1", "bic", true, 1,300);
+//        DDJThread ddjThread2 = new DDJThread("prodd2", "bic", true,301,650);
+//        DDJThread ddjThread3 = new DDJThread("prodd3", "bic", true,651,1300);
+//        DDJThread ddjThread4 = new DDJThread("prodd4", "bic", true,1301,1800);
 
 //        DDJThread ddjThread2 = new DDJThread("prodd", "bic", true);
 

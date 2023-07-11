@@ -1,5 +1,7 @@
-package start;
+package start.DDJ;
 
+
+import start.*;
 
 import java.io.File;
 import java.util.Arrays;
@@ -78,11 +80,11 @@ public class DDJ {
         if(isDecomposed){
             command = "timeout " + timeout + " ./cca.py ddjava --include src/main/java cache_projects" + File.separator + message + File.separator
                     + projectName.replace("/", "_") + " "
-                    + godName +" "+ badName + " -a " + tool;
+                    + godName +" "+ badName + " -a " + (tool.substring(0,5));
         }else {
             command = "timeout " + timeout + " ./cca.py ddjava --include src/main/java cache_projects" + File.separator + message + File.separator
                     + projectName.replace("/", "_") + " "
-                    + godName + " " + badName + " -a " + tool + " --noresolve --noref --nochg";
+                    + godName + " " + badName + " -a " + (tool.substring(0,5)) + " --noresolve --noref --nochg";
         }
         System.out.println(command);
         executor.setDirectory(new File(Main.workSpacePath));
