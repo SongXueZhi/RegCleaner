@@ -14,18 +14,21 @@ import java.util.regex.Pattern;
 
 /**
  * @author lsn
- * @date 2023/3/27 9:46 AM
+ * @date 2023/7/20 7:04 PM
  */
-public class DDJThreadForDefects4j extends Thread {
+public class DDJThreadForDefects4jNew extends Thread {
     static Executor executor = new Executor();
     private String tool;
     private String version;
     private boolean isDecomposed;
+    private String model;
 
-    public DDJThreadForDefects4j(String tool, String version, boolean isDecomposed) {
+    public DDJThreadForDefects4jNew(String tool, String version, boolean isDecomposed, String model) {
         this.tool = tool;
         this.version = version;
         this.isDecomposed = isDecomposed;
+        this.model = model;
+
     }
 
     public void run() {
@@ -37,9 +40,9 @@ public class DDJThreadForDefects4j extends Thread {
         for (int i = 0; i < regressions.size(); i++) {
             Regression regression = regressions.get(i);
             String projectName = regression.getProject_full_name();
-            System.out.println(regression.getId() + " " + projectName + " " + tool +  " " + version + " " + isDecomposed);
+            System.out.println(regression.getId() + " " + projectName + " " + tool +  " " + version + " " + isDecomposed + " " + model);
             try {
-                DDJForDefects4j ddj = new DDJForDefects4j(new File(SourceManager.cacheProjectsDirPath), regression, tool, version, isDecomposed, projectName);
+                DDJForDefects4jNew ddj = new DDJForDefects4jNew(new File(SourceManager.cacheProjectsDirPath), regression, tool, version, isDecomposed, projectName, model);
                 ddj.checkout();
                 ddj.runCCA();
             } catch (Exception e) {
@@ -54,7 +57,7 @@ public class DDJThreadForDefects4j extends Thread {
         List<String> dataName = SourceManager.getDataName();
         for(String name : dataName){
             String[] split = name.split("_");
-            if(split.length == (isDecomposed ? 4: 5) && split[1].equals(version) && split[3].substring(0,5).equals(tool.substring(0,5))){
+            if(split.length == (isDecomposed ? 5: 6) && split[1].equals(version) && split[3].substring(0,5).equals(tool.substring(0,5)) && split[split.length-1].equals(model)){
                 uuid.add(split[0]);
             }
         }

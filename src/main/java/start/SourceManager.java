@@ -124,7 +124,12 @@ public class SourceManager {
         File[] child = projectDir.listFiles();
         for (File file : child) {
             if (file.getName().contains("__CCA__")) {
-                File logFile = new File(file, "data.log");
+                File logFile = null;
+                if(message.contains("reldd")){
+                    logFile = new File(file, "data.log");
+                }else {
+                    logFile = new File(file, "data_old.log");
+                }
                 if (logFile.exists()) {
                     System.out.println("ddj result file :" + logFile);
                     SourceManager.saveData(logFile, newName);
@@ -379,6 +384,7 @@ public class SourceManager {
                 String s2 = "defects4j compile &> /dev/null";
                 FileUtils.write(buildFile, s1 + "\n" + s2, "UTF-8");
             } catch (IOException e) {
+                System.out.println("create build.sh failed " + buildFile.getAbsolutePath() );
                 e.printStackTrace();
             }
         }
@@ -397,6 +403,7 @@ public class SourceManager {
                 String s10 = "fi" + "\n";
                 FileUtils.write(testFile, s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8 + s9 + s10, "UTF-8");
             } catch (IOException e) {
+                System.out.println("create test.sh failed " + testFile.getAbsolutePath());
                 e.printStackTrace();
             }
 
@@ -415,7 +422,9 @@ public class SourceManager {
         for (File file : child) {
             if (!file.getName().contains("__CCA__")) {
                 if(file.isDirectory()){
-                    FileUtils.deleteDirectory(file);
+                    Executor executor = new Executor();
+                    executor.exec("sudo rm -rf " + file.getAbsolutePath());
+//                    FileUtils.deleteDirectory(file);
                 }
             }
         }

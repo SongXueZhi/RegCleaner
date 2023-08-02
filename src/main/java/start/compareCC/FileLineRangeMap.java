@@ -13,6 +13,8 @@ public class FileLineRangeMap {
 
     private int hunkNum ;
 
+    private int groupNum ;
+
     public int getHunkNum() {
         return hunkNum;
     }
@@ -21,9 +23,22 @@ public class FileLineRangeMap {
         this.hunkNum = hunkNum;
     }
 
+    public Map<String, LineRangeList> getFileLineRangeMap() {
+        return fileLineRangeMap;
+    }
+
+    public int getGroupNum() {
+        return groupNum;
+    }
+
+    public void setGroupNum(int groupNum) {
+        this.groupNum = groupNum;
+    }
+
     public FileLineRangeMap() {
         fileLineRangeMap = new HashMap<>();
         hunkNum = 0;
+        groupNum = 0;
     }
 
     public void addLineRange(String fileName, int start, int end) {
@@ -135,11 +150,30 @@ public class FileLineRangeMap {
     }
 
     public static void main(String[] args) {
-        String input = "*** src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java\n" +
-                "  [1*] HUNK (7) DEL IfStatement [305:8-307:8 src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java]-[297:4-306:4 src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java]\n" +
-                "*** src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java\n" +
-                "  [7*] HUNK (7) DEL IfStatement [403:8-405:8 src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java]-[396:75-403:4 src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java]";
-
+        String input = "[0*] HUNK (4) DEL PrimaryMethodInvocationStatement [1006:8-1006:51 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [1*] HUNK (7) DEL PrimaryMethodInvocationStatement [1009:8-1009:52 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [2*] HUNK (6) DEL PrimaryMethodInvocationStatement [1010:8-1010:72 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [3*] HUNK (3) DEL PrimaryMethodInvocationStatement [1011:8-1011:41 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [6*] HUNK (5) DEL SimpleMethodInvocationStatement [1017:8-1017:70 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [7*] HUNK (4) DEL PrimaryMethodInvocationStatement [1018:8-1018:33 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [8*] HUNK (7) DEL PrimaryMethodInvocationStatement [1019:8-1019:78 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [10*] HUNK (6) DEL PrimaryMethodInvocationStatement [1021:8-1021:98 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [11*] HUNK (13) DEL PrimaryMethodInvocationStatement [1022:8-1023:108 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [12*] HUNK (7) DEL PrimaryMethodInvocationStatement [1024:8-1024:63 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [13*] HUNK (10) DEL PrimaryMethodInvocationStatement [1026:8-1026:68 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [14*] HUNK (7) DEL PrimaryMethodInvocationStatement [1027:8-1027:62 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [15*] HUNK (23) DEL IfStatement [1028:8-1032:8 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [17*] HUNK (4) DEL PrimaryMethodInvocationStatement [1035:8-1035:39 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [18*] HUNK (3) DEL PrimaryMethodInvocationStatement [1037:8-1037:37 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[964:85-1128:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [17*] HUNK (4) INS PrimaryMethodInvocationStatement [964:85-1151:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[1001:8-1001:43 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [1*] HUNK (7) INS PrimaryMethodInvocationStatement [964:85-1151:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[997:8-997:52 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [2*] HUNK (6) INS PrimaryMethodInvocationStatement [964:85-1151:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[998:8-998:72 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [3*] HUNK (3) INS PrimaryMethodInvocationStatement [964:85-1151:4 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[999:8-999:43 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [3*] HUNK (3) MOV PrimaryMethodInvocationStatement [1011:8-1011:41 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[999:8-999:43 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [3*] HUNK (0) REL Name [1011:24-1011:39 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[999:24-999:41 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [17*] HUNK (0) REL FieldAccess [1035:25-1035:28 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[1001:25-1001:33 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]\n" +
+                "  [17*] HUNK (0) REL Name [1035:31-1035:37 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]-[1001:36-1001:41 src/main/java/com/alibaba/fastjson/parser/deserializer/ASMDeserializerFactory.java]" +
+                "";
         FileLineRangeMap fileLineRangeMap = new FileLineRangeMap();
 
         String[] lines = input.split("\n");

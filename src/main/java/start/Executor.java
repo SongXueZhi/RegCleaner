@@ -88,10 +88,10 @@ public class Executor {
                     process.destroy();
                 }
                 if (inputStr != null) {
-                    IOUtils.close(inputStr);
+//                    IOUtils.close(inputStr);
                 }
                 if (bufferReader != null) {
-                    IOUtils.close(bufferReader);
+//                    IOUtils.close(bufferReader);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -132,10 +132,10 @@ public class Executor {
                     process.destroy();
                 }
                 if (inputStr != null) {
-                    IOUtils.close(inputStr);
+//                    IOUtils.close(inputStr);
                 }
                 if (bufferReader != null) {
-                    IOUtils.close(bufferReader);
+//                    IOUtils.close(bufferReader);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -196,10 +196,10 @@ public class Executor {
                     process.destroy();
                 }
                 if (inputStr != null) {
-                    IOUtils.close(inputStr);
+//                    IOUtils.close(inputStr);
                 }
                 if (bufferReader != null) {
-                    IOUtils.close(bufferReader);
+//                    IOUtils.close(bufferReader);
                 }
 
             } catch (Exception e) {
@@ -238,10 +238,10 @@ public class Executor {
                     process.destroy();
                 }
                 if (inputStr != null) {
-                    IOUtils.close(inputStr);
+//                    IOUtils.close(inputStr);
                 }
                 if (bufferReader != null) {
-                    IOUtils.close(bufferReader);
+//                    IOUtils.close(bufferReader);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

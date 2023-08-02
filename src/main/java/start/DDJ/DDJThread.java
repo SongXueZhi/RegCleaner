@@ -63,7 +63,7 @@ public class DDJThread extends Thread {
         List<String> dataName = SourceManager.getDataName();
         for(String name : dataName){
             String[] split = name.split("_");
-            if(split.length == (isDecomposed ? 4: 5) && split[1].equals(version) && split[3].equals(tool)){
+            if(split.length == (isDecomposed ? 4: 5) && split[1].equals(version) && split[3].substring(0,5).equals(tool.substring(0,5))){
                 uuid.add(split[0]);
             }
         }

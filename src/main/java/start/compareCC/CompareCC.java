@@ -132,7 +132,7 @@ public class CompareCC {
             //(36) DEL File [src/main/java/org/apache/commons/codec/binary/CharSequenceUtils.java]-[None]
             if(lineRangeArray[2].equals("File")){
                 //None
-                return new int[]{0, 99999};
+                return new int[]{0, 0};
             }
             //305:8-307:8
             lineRange = lineRangeArray[3].replace("[","");

@@ -40,9 +40,8 @@ public class DDJThreadForNew extends Thread {
         for (int i = 0; i < regressions.size(); i++) {
             Regression regression = regressions.get(i);
             String projectName = regression.getProject_full_name();
-            System.out.println(projectName + " " + tool +  " " + version + " " + isDecomposed + " " + model);
+            System.out.println(regression.getId() + " " + projectName + " " + tool +  " " + version + " " + isDecomposed + " " + model);
             File projectDir = SourceManager.getProjectDir(projectName);
-            System.out.println(regression.getId());
             try {
                 DDJForNew ddj = new DDJForNew(projectDir, regression, tool, version, isDecomposed, projectName, model);
                 ddj.checkout();
@@ -59,7 +58,7 @@ public class DDJThreadForNew extends Thread {
         List<String> dataName = SourceManager.getDataName();
         for(String name : dataName){
             String[] split = name.split("_");
-            if(split.length == (isDecomposed ? 5: 6) && split[1].equals(version) && split[3].equals(tool) && split[5].equals(model)){
+            if(split.length == (isDecomposed ? 5: 6) && split[1].equals(version) && split[3].substring(0,5).equals(tool.substring(0,5)) && split[split.length-1].equals(model)){
                 uuid.add(split[0]);
             }
         }

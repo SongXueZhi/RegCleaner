@@ -33,12 +33,11 @@ public class DDJForNew {
         this.version = version;
         this.isDecomposed = isDecomposed;
         this.projectName = projectName;
-        this.message = version + "_ddj_" + tool + (isDecomposed ? "_" : "_nodecomposed_" + model);
+        this.message = version + "_ddj_" + tool + (isDecomposed ? "_" : "_nodecomposed_") + model;
 
     }
 
     public void checkout(){
-
         Revision bfc = new Revision(regression.getBfc(),"bfc");
         bfc.setLocalCodeDir(SourceManager.checkout(regression.getId(), bfc, projectDir, message, projectName));
         regression.setBfcRev(bfc);
@@ -79,14 +78,23 @@ public class DDJForNew {
             godName = regressionID + "_bfc";
             badName = regressionID + "_buggy";
         }
-        if(isDecomposed){
-            command = "timeout " + timeout + " ./cca_sxz.py ddjava --include src/main/java cache_projects" + File.separator + message + File.separator
-                    + projectName.replace("/", "_") + " "
-                    + godName +" "+ badName + " -a " + (tool.substring(0,5)) + " --model " + model;
-        }else {
-            command = "timeout " + timeout + " ./cca_sxz.py ddjava --include src/main/java cache_projects" + File.separator + message + File.separator
-                    + projectName.replace("/", "_") + " "
-                    + godName + " " + badName + " -a " + (tool.substring(0,5)) + " --noresolve --noref --nochg" + " --model " + model;
+        switch (model){
+            case "log":
+            case "log+matrix":
+            case "matrix":
+                command = "timeout " + timeout + " ./cca_sxz.py ddjava --include src/main/java cache_projects" + File.separator + message + File.separator
+                        + projectName.replace("/", "_") + " "
+                        + godName +" "+ badName + " -a " + (tool.substring(0,5)) + " -d --model " + model;
+                break;
+            case "noconsider":
+            case "nostart":
+            case "nosamplex":
+                command = "timeout " + timeout + " ./cca_sxz.py ddjava --include src/main/java cache_projects" + File.separator + message + File.separator
+                        + projectName.replace("/", "_") + " "
+                        + godName +" "+ badName + " -a " + (tool.substring(0,5)) + " -d --model log+matrix --" + model;
+                break;
+            default:
+                throw new Exception("model error");
         }
         System.out.println(command);
         executor.setDirectory(new File(Main.workSpacePath));

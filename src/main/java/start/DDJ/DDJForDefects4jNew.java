@@ -11,9 +11,9 @@ import java.util.List;
 
 /**
  * @author lsn
- * @date 2023/3/27 9:25 AM
+ * @date 2023/7/20 7:03 PM
  */
-public class DDJForDefects4j {
+public class DDJForDefects4jNew {
 
     static Executor executor = new Executor();
     private File projectDir;
@@ -24,15 +24,18 @@ public class DDJForDefects4j {
     private String projectName;
     private String message;
     private final int timeout = 7200;
+    private String model;
 
-    public DDJForDefects4j(File cacheDir, Regression regression, String tool, String version, boolean isDecomposed, String projectName) {
+
+    public DDJForDefects4jNew(File cacheDir, Regression regression, String tool, String version, boolean isDecomposed, String projectName, String model) {
         this.regression = regression;
         this.tool = tool;
         this.version = version;
         this.isDecomposed = isDecomposed;
         this.projectName = projectName;
-        this.message = version + "_ddj_" + tool + (isDecomposed ? "" : "_nodecomposed");
+        this.message = version + "_ddj_" + tool + (isDecomposed ? "_" : "_nodecomposed_") + model;
         this.projectDir = new File(cacheDir, message + File.separator + projectName);
+        this.model = model;
     }
 
     public void checkout() throws IOException {
@@ -86,16 +89,25 @@ public class DDJForDefects4j {
             godName = regressionID + "_fix";
             badName = regressionID + "_buggy";
         }
-        System.out.println("start " +version + " ddj " + tool);
-        if(isDecomposed){
-            command = "timeout " + timeout + " ./cca_bfc.py ddjava cache_projects" + File.separator + message + File.separator
-                    + projectName.replace("/", "_") + " "
-                    + godName +" "+ badName + " -a " + (tool.substring(0,5)) + " --include gson/src/main -d -v";
-        }else {
-            command = "timeout " + timeout + " ./cca_bfc.py ddjava cache_projects" + File.separator + message + File.separator
-                    + projectName.replace("/", "_") + " "
-                    + godName + " " + badName + " -a " + (tool.substring(0,5)) + "--include gson/src/main --noresolve --noref --nochg";
+        switch (model){
+            case "log":
+            case "log+matrix":
+            case "matrix":
+                command = "timeout " + timeout + " ./cca_bfc.py ddjava cache_projects" + File.separator + message + File.separator
+                        + projectName.replace("/", "_") + " "
+                        + godName +" "+ badName + " -a " + (tool.substring(0,5)) + " --include gson/src/main -d -v --model " + model;
+                break;
+            case "noconsider":
+            case "nostart":
+            case "nosamplex":
+                command = "timeout " + timeout + " ./cca_bfc.py ddjava cache_projects" + File.separator + message + File.separator
+                        + projectName.replace("/", "_") + " "
+                        + godName +" "+ badName + " -a " + (tool.substring(0,5)) + " --include gson/src/main -d -v --model log+matrix --" + model;
+                break;
+            default:
+                throw new Exception("model error");
         }
+
         System.out.println(command);
         executor.setDirectory(new File(Main.workSpacePath));
         executor.exec(command);

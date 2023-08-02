@@ -9,12 +9,14 @@ import java.io.*;
  * @date 2023/6/19 8:19 PM
  */
 public class Hunk2Line {
-    static String dataPath = "/Users/lsn/ddj_space/data_save";
+    static String dataPath = "/Users/lsn/ddj_space/data_defects4j";
+    static String diffPath = "/Users/lsn/ddj_space/diff_defects4j";
 
     public static void main(String[] args) throws IOException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter("data_bic_old.csv"));
-        String[] header = {"ID", "version", "tool", "is_decomposed", "diffFile", "diffHunk", "diffLine"};
+        CSVWriter writer = new CSVWriter(new FileWriter("data_defects4j.csv"));
+        String[] header = {"ID", "tool", "ccFile","ccGroup", "ccHunk", "ccLine",
+                "diffFile",  "diffGroup", "diffHunk", "diffLine", "groupCompare", "hunkCompare", "lineCompare"};
         writer.writeNext(header);
 
         File directory = new File(dataPath);
@@ -23,23 +25,42 @@ public class Hunk2Line {
         if (files != null) {
             for (File file : files) {
                 if (file.isFile()) {
-                    if(!file.getName().contains("799_bic_ddj_prodd") ){
-                        continue;
-                    }
-//                    if(file.getName().contains(".DS_Store") || file.getName().contains("reldd") ){
+//                    if(!file.getName().contains("799_bic_ddj_prodd") ){
 //                        continue;
 //                    }
+                    if(file.getName().contains(".DS_Store")){
+                        continue;
+                    }
                     try {
                         //System.out.println(file.getName());
                         String id = file.getName().split("_")[0];
-                        String version = file.getName().split("_")[1];
                         String tool = file.getName().split("_")[3].substring(0,5);
-                        String is_decomposed = file.getName().split("_").length > 4 ? "false" : "true";
+                        if(tool.equals("reldd")){
+                            tool = tool + "-" + file.getName().split("_")[4];
+                        }
 
-                        FileLineRangeMap lineRangeMap = getDiffHunk(dataPath + File.separator + file.getName());
+                        FileLineRangeMap lineRangeMap = getCcHunk(dataPath + File.separator + file.getName());
+                        FileLineRangeMap diffLineRangeMap = getDiffHunk(diffPath + File.separator + id + "_diff_ddj_ddmin");
 
-                        writer.writeNext(new String[]{id, version, tool, is_decomposed, String.valueOf(lineRangeMap.getFileCount()),
-                                String.valueOf(lineRangeMap.getHunkNum()), String.valueOf(lineRangeMap.getTotalLineCount()) });
+                        String groupCompare = lineRangeMap.getGroupNum() == 0 ? "no_cc"  :
+                                (lineRangeMap.getGroupNum() == (diffLineRangeMap.getGroupNum())) ? "len_same" :
+                                        (lineRangeMap.getGroupNum() < (diffLineRangeMap.getGroupNum())) ? "better" : "worse" ;
+                        String hunkCompare = lineRangeMap.getHunkNum() == 0 ? "no_cc":
+                                (lineRangeMap.getHunkNum() == (diffLineRangeMap.getHunkNum())) ? "len_same" :
+                                        (lineRangeMap.getHunkNum() < (diffLineRangeMap.getHunkNum())) ? "better" : "worse" ;
+                        String lineCompare = lineRangeMap.getTotalLineCount() == 0 ? "no_cc" : lineRangeMap.equals(diffLineRangeMap) ? "same" :
+                                        (lineRangeMap.getTotalLineCount() == (diffLineRangeMap.getTotalLineCount())) ? "len_same" :
+                                        (lineRangeMap.getTotalLineCount() < (diffLineRangeMap.getTotalLineCount())) ? "better" : "worse" ;
+
+//                        System.out.println(id + "-" + tool + ": " );
+//                        System.out.print("cc: " + lineRangeMap.toString() );
+//                        System.out.print("diff: " + diffLineRangeMap.toString() );
+
+                        writer.writeNext(new String[]{id, tool,
+                                String.valueOf(lineRangeMap.getFileCount()), String.valueOf(lineRangeMap.getGroupNum()), String.valueOf(lineRangeMap.getHunkNum()), String.valueOf(lineRangeMap.getTotalLineCount()),
+                                String.valueOf(diffLineRangeMap.getFileCount()), String.valueOf(diffLineRangeMap.getGroupNum()), String.valueOf(diffLineRangeMap.getHunkNum()), String.valueOf(diffLineRangeMap.getTotalLineCount()),
+                                groupCompare, hunkCompare, lineCompare,
+                        });
 
                     }catch (Exception e){
                         System.out.println("error: " + file.getName());
@@ -51,6 +72,11 @@ public class Hunk2Line {
         writer.close();
     }
 
+//    public static void main(String[] arge){
+//        FileLineRangeMap lineRangeMap = getCcHunk("id.txt");
+//        System.out.println(lineRangeMap.toString());
+//    }
+
     public static FileLineRangeMap getCcHunk(String dataFilePath) {
         FileLineRangeMap fileLineRangeMap = new FileLineRangeMap();
         try {
@@ -61,18 +87,42 @@ public class Hunk2Line {
             String line;
             // 按行读取文件内容
             String fileName = "";
+            int cc = 10000;
             while ((line = bufferedReader.readLine()) != null) {
+                if(dataFilePath.contains("reldd") && line.startsWith("cc")){
+                    cc = Math.min(cc,Integer.parseInt(line.replace("cc", "").trim().split("cp: ")[0]));
+                }
+                //todo 对于defetcs4j是FAIL
+                if(dataFilePath.contains("reldd") && line.contains(":FAIL")){
+                    String set = line.split(":")[0].trim();
+                    cc = Math.min(cc,set.split(",").length);
+                }
+                if(dataFilePath.contains("reldd") && line.startsWith("ungrouped (")){
+                    if(Integer.parseInt(line.split("\\(")[1].split("\\)")[0]) == 1){
+                        cc = 1;
+                    }
+                }
+                if(!dataFilePath.contains("reldd") && line.startsWith("ungrouped components (")){
+                    fileLineRangeMap.setGroupNum(Integer.parseInt(line.split("\\(")[1].split("\\)")[0]));
+                }
                 if(line.contains("***")){
                     fileName = line.replace("***", "").trim();
                 }
                 if(line.contains("*] HUNK")){
-                    int[] lineRange = splitLineRange(line.split("HUNK ")[1]);
+                    int[] lineRange = splitLineRange(line.split("HUNK ")[1].split("cp:")[0]);
                     if(lineRange == null){
                         continue;
                     }
                     fileLineRangeMap.setHunkNum(fileLineRangeMap.getHunkNum() + 1);
                     fileLineRangeMap.addLineRange(fileName, lineRange[0], lineRange[1]);
                 }
+            }
+
+            if(dataFilePath.contains("reldd")){
+                if(cc == 10000){
+                    cc = 0;
+                }
+                fileLineRangeMap.setGroupNum(cc);
             }
             bufferedReader.close(); // 关闭 BufferedReader
         }
@@ -96,6 +146,9 @@ public class Hunk2Line {
             String line;
             // 按行读取文件内容
             while ((line = bufferedReader.readLine()) != null) {
+                if(line.startsWith("ungrouped (")){
+                    fileLineRangeMap.setGroupNum(Integer.parseInt(line.split("\\(")[1].split("\\)")[0]));
+                }
                 if(line.startsWith(" HUNK")){
                     String fileName = splitFileName(line.split("HUNK ")[1]);
                     int[] lineRange = splitLineRange(line.split("HUNK ")[1]);
@@ -128,7 +181,7 @@ public class Hunk2Line {
             //(36) DEL File [src/main/java/org/apache/commons/codec/binary/CharSequenceUtils.java]-[None]
             if(lineRangeArray[2].equals("File")){
                 //None
-                return new int[]{0, 99999};
+                return new int[]{0, 0};
             }
             lineRange = lineRangeArray[3].replace("[","");
         }
@@ -136,14 +189,14 @@ public class Hunk2Line {
             // (0) INS File [None]-[src/main/java/org/dbtools/query/shared/QueryCompareType.java]
             if(lineRangeArray[2].equals("File")){
                 //None
-                return new int[]{0, 99999};
+                return new int[]{0, 0};
             }
             lineRange = lineRangeArray[4].split("\\[")[1];
         }
         else if( lineRangeArray[1].equals("MOV")){
             if(lineRangeArray[2].equals("File")){
                 //None
-                return new int[]{0, 99999};
+                return new int[]{0, 0};
             }
             lineRange = lineRangeArray[4].split("\\[")[1];
         }
