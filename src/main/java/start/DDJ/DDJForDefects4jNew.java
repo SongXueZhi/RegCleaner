@@ -95,14 +95,15 @@ public class DDJForDefects4jNew {
             case "matrix":
                 command = "timeout " + timeout + " ./cca_bfc.py ddjava cache_projects" + File.separator + message + File.separator
                         + projectName.replace("/", "_") + " "
-                        + godName +" "+ badName + " -a " + (tool.substring(0,5)) + " --include gson/src/main -d -v --model " + model;
+                        + godName +" "+ badName + " -a " + (tool.substring(0,5)) + 
+                        " --include src/main/java --include src/java --include src/com --include src/org -d -v --model " + model;
                 break;
             case "noconsider":
             case "nostart":
             case "nosamplex":
                 command = "timeout " + timeout + " ./cca_bfc.py ddjava cache_projects" + File.separator + message + File.separator
                         + projectName.replace("/", "_") + " "
-                        + godName +" "+ badName + " -a " + (tool.substring(0,5)) + " --include gson/src/main -d -v --model log+matrix --" + model;
+                        + godName +" "+ badName + " -a " + (tool.substring(0,5)) + "--include src/main/java --include src/java --include src/com --include src/org -d -v --model log+matrix --" + model;
                 break;
             default:
                 throw new Exception("model error");

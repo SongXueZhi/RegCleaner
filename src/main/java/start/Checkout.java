@@ -14,8 +14,8 @@ public class Checkout {
     static Migrator migrator = new Migrator();
 
     public static void main(String[] args) {
-        String sql = "select * from regressions_all where id = 45";
-        //String sql = "select * from regressions_all where is_clean=1 and is_dirty=0";
+//        String sql = "select * from regressions_all where id = 353";
+        String sql = "select * from regressions_all where is_clean=1 and is_dirty=0";
         List<Regression> regressions  = MysqlManager.selectRegressionstoList(sql);
         System.out.println("regression size: " + regressions.size());
         for (int i = 0; i < regressions.size(); i++) {

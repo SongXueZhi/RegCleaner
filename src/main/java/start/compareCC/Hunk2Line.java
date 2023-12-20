@@ -9,12 +9,12 @@ import java.io.*;
  * @date 2023/6/19 8:19 PM
  */
 public class Hunk2Line {
-    static String dataPath = "/Users/lsn/ddj_space/data_defects4j";
+    static String dataPath = "/Users/lsn/ddj_space/merge";
     static String diffPath = "/Users/lsn/ddj_space/diff_defects4j";
 
     public static void main(String[] args) throws IOException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter("data_defects4j.csv"));
+        CSVWriter writer = new CSVWriter(new FileWriter("data_defects4j0925.csv"));
         String[] header = {"ID", "tool", "ccFile","ccGroup", "ccHunk", "ccLine",
                 "diffFile",  "diffGroup", "diffHunk", "diffLine", "groupCompare", "hunkCompare", "lineCompare"};
         writer.writeNext(header);

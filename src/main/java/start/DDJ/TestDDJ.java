@@ -10,6 +10,10 @@ public class TestDDJ {
 
     public static void main(String[] args) throws InterruptedException {
 
+//        DDJThreadForSelect ddjThreadForSelect = new DDJThreadForSelect("reldd", "bic", true, "matrix");
+//        ddjThreadForSelect.run();
+//        DDJThreadForDefects4jNew ddjThreadForDefects4jNew = new DDJThreadForDefects4jNew("reldd", "defects4j", true, "matrix");
+//        ddjThreadForDefects4jNew.start();
 //        DDJThreadForNew ddjThread1 = new DDJThreadForNew("reldd1", "bic", true, 1,650, "log+matrix");
 //        DDJThreadForNew ddjThread2 = new DDJThreadForNew("reldd1", "bic", true,1,650, "log");
 //        DDJThreadForNew ddjThread3 = new DDJThreadForNew("reldd1", "bic", true,1,650, "matrix");
@@ -19,15 +23,12 @@ public class TestDDJ {
 //        DDJThreadForNew ddjThread7 = new DDJThreadForNew("reldd3", "bic", true, 1701,1800, "log+matrix");
 //        DDJThreadForNew ddjThread8 = new DDJThreadForNew("reldd3", "bic", true,1701,1800,"log");
 //        DDJThreadForNew ddjThread9 = new DDJThreadForNew("reldd3", "bic", true,1701,1800, "matrix");
-//        DDJThreadForNew ddjThread1 = new DDJThreadForNew("reldd1", "bic", true, 1,650, "noconsider");
-//        DDJThreadForNew ddjThread2 = new DDJThreadForNew("reldd1", "bic", true,1,650, "nostart");
-//        DDJThreadForNew ddjThread3 = new DDJThreadForNew("reldd1", "bic", true,1,650, "nosamplex");
-//        DDJThreadForNew ddjThread4 = new DDJThreadForNew("reldd2", "bic", true, 651,1700, "noconsider");
-//        DDJThreadForNew ddjThread5 = new DDJThreadForNew("reldd2", "bic", true,651,1700, "nostart");
-//        DDJThreadForNew ddjThread6 = new DDJThreadForNew("reldd2", "bic", true,651,1700, "nosamplex");
-//        DDJThreadForNew ddjThread7 = new DDJThreadForNew("reldd3", "bic", true, 1701,1800, "noconsider");
-//        DDJThreadForNew ddjThread8 = new DDJThreadForNew("reldd3", "bic", true,1701,1800,"nostart");
-//        DDJThreadForNew ddjThread9 = new DDJThreadForNew("reldd3", "bic", true,1701,1800, "nosamplex");
+//        DDJThreadForNew ddjThread1 = new DDJThreadForNew("reldd1", "bic", true, 1,550, "noconsider");
+//        DDJThreadForNew ddjThread3 = new DDJThreadForNew("reldd1", "bic", true,1,550, "nosamplex");
+//        DDJThreadForNew ddjThread4 = new DDJThreadForNew("reldd2", "bic", true, 551,600, "noconsider");
+//        DDJThreadForNew ddjThread6 = new DDJThreadForNew("reldd2", "bic", true,551,600, "nosamplex");
+//        DDJThreadForNew ddjThread7 = new DDJThreadForNew("reldd3", "bic", true, 601,1800, "noconsider");
+//        DDJThreadForNew ddjThread9 = new DDJThreadForNew("reldd3", "bic", true,601,1800, "nosamplex");
 
 
 //        DDJThread ddjThread1 = new DDJThread("prodd1", "bic", true, 1,300);

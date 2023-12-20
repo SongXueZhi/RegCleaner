@@ -79,7 +79,7 @@ public class DDJThreadForSelect {
     }
 
     public static void main(String[] args) {
-        DDJThreadForSelect ddjThreadForSelect = new DDJThreadForSelect("reldd", "bic", true, "log+matrix");
+        DDJThreadForSelect ddjThreadForSelect = new DDJThreadForSelect("reldd", "bic", true, "matrix");
         ddjThreadForSelect.run();
     }
 }

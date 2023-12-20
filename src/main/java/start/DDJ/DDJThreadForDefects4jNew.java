@@ -70,12 +70,12 @@ public class DDJThreadForDefects4jNew extends Thread {
         List<Regression> regressions = new ArrayList<>();
         for(String pid : pids){
             //todo 后续单独处理
-//            if(pid == null || pid.equals("") || pid.equals(" ") || pid.equals("Chart") || pid.equals("Closure") || pid.equals("Mockito") || pid.equals("Math") ){
-//                continue;
-//            }
-            if(!pid.equals("Gson")){
+            if(pid == null || pid.equals("") || pid.equals(" ") || pid.equals("Chart") || pid.equals("Closure") || pid.equals("Mockito") || pid.equals("Math") ){
                 continue;
             }
+//            if(!pid.equals("Gson")){
+//                continue;
+//            }
             String bidResult = executor.exec("defects4j bids -p " + pid);
             String[] bids = bidResult.split("\n");
             for (String bid : bids){

@@ -269,7 +269,8 @@ public class SourceManager {
                 buildFile.canExecute();
                 buildFile.canWrite();
                 String s1 = "#!/bin/bash";
-                String s2 = "mvn clean compile test-compile -Dstyle.color=never -q";
+                String s2 = "mvn clean compile test-compile &> /dev/null";
+//                String s2 = "mvn clean compile test-compile -Dstyle.color=never -q";
                 FileUtils.write(buildFile, s1 + "\n" + s2, "UTF-8");
             } catch (IOException e) {
                 e.printStackTrace();
