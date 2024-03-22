@@ -7,6 +7,7 @@ import start.SourceManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -22,13 +23,14 @@ public class DDJThreadForDefects4jNew extends Thread {
     private String version;
     private boolean isDecomposed;
     private String model;
+    private List<String> projects;
 
-    public DDJThreadForDefects4jNew(String tool, String version, boolean isDecomposed, String model) {
+    public DDJThreadForDefects4jNew(String tool, String version, boolean isDecomposed, String model, List<String> projects) {
         this.tool = tool;
         this.version = version;
         this.isDecomposed = isDecomposed;
         this.model = model;
-
+        this.projects = projects;
     }
 
     public void run() {
@@ -67,10 +69,13 @@ public class DDJThreadForDefects4jNew extends Thread {
     public List<Regression> getRegressionFromDefects4j(){
         String pidResult = executor.exec("defects4j pids");
         String[] pids = pidResult.split("\n");
+        ArrayList<String> pidsList = new ArrayList<>(Arrays.asList(pids));
+        // 使用 removeIf() 方法删除不在 projects 中的项
+        pidsList.removeIf(pid -> !projects.contains(pid));
         List<Regression> regressions = new ArrayList<>();
-        for(String pid : pids){
+        for(String pid : pidsList){
             //todo 后续单独处理
-            if(pid == null || pid.equals("") || pid.equals(" ") || pid.equals("Chart") || pid.equals("Closure") || pid.equals("Mockito") || pid.equals("Math") ){
+            if(pid == null || pid.equals("") || pid.equals(" ") || pid.equals("Chart") ){
                 continue;
             }
 //            if(!pid.equals("Gson")){

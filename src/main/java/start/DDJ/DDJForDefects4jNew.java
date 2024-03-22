@@ -96,7 +96,7 @@ public class DDJForDefects4jNew {
                 command = "timeout " + timeout + " ./cca_bfc.py ddjava cache_projects" + File.separator + message + File.separator
                         + projectName.replace("/", "_") + " "
                         + godName +" "+ badName + " -a " + (tool.substring(0,5)) + 
-                        " --include src/main/java --include src/java --include src/com --include src/org -d -v --model " + model;
+                        " --include src/main/java --include src/java --include src/com --include src/org  --include gson/src/main/java -d -v --model " + model;
                 break;
             case "noconsider":
             case "nostart":

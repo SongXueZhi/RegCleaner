@@ -1,6 +1,8 @@
 package start;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.Edit;
@@ -41,22 +43,57 @@ public class GitUtils {
         }
     }
 
+//    public static boolean checkout(String commitID, File codeDir) {
+//        try (Repository repository = RepositoryProvider.getRepoFromLocal(codeDir); Git git = new Git(repository)) {
+//            if (commitID.contains("~1")){
+//                try (RevWalk revWalk = new RevWalk(repository);) {
+//                    RevCommit commit = revWalk.parseCommit(repository.resolve(commitID));
+//                    git.checkout().setName(commit.getName()).setCreateBranch(false).setForceRefUpdate(true).call();
+//                }
+//            }else{
+//                git.checkout().setName(commitID).setCreateBranch(false).setForceRefUpdate(true).call();
+//            }
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//
+//    }
+
     public static boolean checkout(String commitID, File codeDir) {
         try (Repository repository = RepositoryProvider.getRepoFromLocal(codeDir); Git git = new Git(repository)) {
-            if (commitID.contains("~1")){
+            if (commitID.contains("~1")) {
                 try (RevWalk revWalk = new RevWalk(repository);) {
                     RevCommit commit = revWalk.parseCommit(repository.resolve(commitID));
-                    git.checkout().setName(commit.getName()).setCreateBranch(false).setForceRefUpdate(true).call();
+                    checkout(git, commit.getName(),codeDir.getAbsolutePath());
                 }
-            }else{
-                git.checkout().setName(commitID).setCreateBranch(false).setForceRefUpdate(true).call();
+            } else {
+                checkout(git, commitID, codeDir.getAbsolutePath());
             }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
+    }
 
+    private static void checkout(Git git, String commit, String repoPath) throws GitAPIException {
+        // check index.lock
+        String lockPath = repoPath + File.separator + ".git" + File.separator + "index.lock";
+        File lock = new File(lockPath);
+
+        if (lock.exists() && lock.delete()) {
+        }
+        // 删除工作树中未跟踪的所有文件和目录，但会保留已跟踪的文件和 Git 子模块
+        git.clean().setCleanDirectories(true).setForce(true).call();
+        git.reset().setMode(ResetCommand.ResetType.HARD).call();
+
+        // check modify
+        git.add().addFilepattern(".").call();
+        git.stashCreate().call();
+
+        git.checkout().setName(commit).setCreateBranch(false).setForceRefUpdate(true).call();
     }
 
 
